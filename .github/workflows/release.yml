@@ -1,0 +1,50 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build extension targets
+        run: npm run build
+
+      - name: Create zip artifacts
+        run: |
+          cd dist/chrome && zip -r ../../youtube-shorts-no-scroll-chrome.zip .
+          cd ../firefox && zip -r ../../youtube-shorts-no-scroll-firefox.zip .
+
+      - name: Determine release tag
+        id: vars
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=v$(date +'%Y.%m.%d-%H%M%S')" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: ${{ steps.vars.outputs.tag }}
+          generate_release_notes: true
+          files: |
+            youtube-shorts-no-scroll-chrome.zip
+            youtube-shorts-no-scroll-firefox.zip

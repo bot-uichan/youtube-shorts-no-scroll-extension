@@ -41,3 +41,18 @@ npm run build:firefox
 ## 注意
 - YouTube側のDOM変更により効かなくなる可能性があります
 - `Shift + n / Shift + p` などYouTube固有ショートカットの挙動は将来変わる場合があります
+
+
+## Release（GitHub）
+- タグ `v*` を push すると GitHub Actions が自動で:
+  - Chrome/Firefox をビルド
+  - `youtube-shorts-no-scroll-chrome.zip` / `youtube-shorts-no-scroll-firefox.zip` を作成
+  - GitHub Release を作成して zip を添付
+
+例:
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+手動実行: Actions の `Release Extension` を `Run workflow`
