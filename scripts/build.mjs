@@ -19,7 +19,10 @@ if (target === 'firefox') {
   manifest.browser_specific_settings = {
     gecko: {
       id: 'youtube-shorts-no-scroll@example.com',
-      strict_min_version: '109.0'
+      strict_min_version: '109.0',
+      data_collection_permissions: {
+        required: ['none']
+      }
     }
   };
 }
